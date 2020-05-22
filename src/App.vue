@@ -1,13 +1,20 @@
 <template>
   <div id="app">
-  <div>APP</div>
+  <!-- <div>APP</div> -->
     <router-view/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  beforeRouteEnter (to, from, next) {
+    // ...
+    console.log(to)
+    console.log(from)
+    debugger
+    next();
+  }
 }
 </script>
 
@@ -18,6 +25,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
 </style>
