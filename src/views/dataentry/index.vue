@@ -204,7 +204,6 @@
           <el-button size="small" type="primary" @click="submitFormlocality('ruleForm')">暂存本地</el-button>
           <el-button size="small" type="primary" @click="submitForm('ruleForm')">提交</el-button>
           <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
-          <el-button size="small" @click="test('ruleForm')">test</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -218,17 +217,6 @@ import db_config from "@/utils/db_config";
 export default {
   name: "dataEntry",
   methods: {
-    test() {
-      console.log(this.ruleForm);
-       Idb(db_config).then(db => {
-         db.queryAll({
-           tableName: "srcData",
-            success: (res) => {
-                console.log(res)
-            }
-         })
-       })
-    },
     removeRow(index) {
       this.ruleForm.list.splice(index, 1);
     },

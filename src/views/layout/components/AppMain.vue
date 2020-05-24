@@ -75,5 +75,6 @@ export default {
 .main_router{
   height: 91vh;
   overflow: auto;
+  // border: solid 1px red;
 }
 </style>
