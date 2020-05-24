@@ -57,5 +57,14 @@ a:hover {
 
 .app-container {
   padding: 20px;
-
+  height: 91vh;
+  min-width: 1280px;
+  // color: rgb(30,215,109);
+}
+.app-center{
+  margin: 0px auto;
+  height: 100%;
+  text-align: left;
+  min-width: 1280px;
+  // color: rgb(30,215,109);
 }

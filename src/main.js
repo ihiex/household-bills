@@ -7,6 +7,7 @@ import Element from 'element-ui'
 import "./styles/index.scss"
 import '@/utils/global'
 import './promission' //从后台换取路由，或单点登录也可以在这处理
+import '@/utils/index_db'
 
 
 Vue.use(Element)

@@ -11,6 +11,8 @@ export default {
         return{
             msg: 'home'
         }
+    },
+    mounted(){
     }
 }
 </script>

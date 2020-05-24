@@ -3,12 +3,12 @@ import router from './router'
 import axios from 'axios'
 const _import = require('./router/_import_' + process.env.NODE_ENV) //获取组件的方法
 import Layout from '@/views/layout' //Layout 是架构组件，不在后台返回，在文件里单独引入
-// import fakeRouter from '@/router/fake_router'
+import routers from '@/router/fake_router' //加载本地路由
 
 var getRouter //用来获取后台拿到的路由
 
 // 假装fakeRouter是通过后台接口请求回来的数据
-let fakeRouter = {
+/* let fakeRouter = {
   "router": [{
     "path": "",
     "component": "Layout",
@@ -58,12 +58,12 @@ let fakeRouter = {
     "hidden": true
   }
   ]
-}
+} */
 router.beforeEach((to, from, next) => {
-  console.log(getRouter)
+  /* console.log(getRouter)
   if (!getRouter) { //不加这个判断，路由会陷入死循环
     if (!getObjArr('router')) {
-      // easy-mock官网经常挂掉，所以就不请求了,你们可以替换成自己公司的接口去请求,把下方的axios请求打开即可
+      // 加载服务器上的路由 由后台控制
       // axios.get('https://www.easy-mock.com/mock/5a5da330d9b48c260cb42ca8/example/antrouter').then(res => {
       console.log('beforeEach  getRouter')
       getRouter = fakeRouter.router //假装模拟后台请求得到的路由数据
@@ -78,8 +78,18 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     next()
-  }
+  } */
 
+  //改成前端控制路由
+  if (!getRouter) {
+
+    getRouter = routers.routers;
+    
+    routerGo(to, next)
+
+  } else {
+    next()
+  }
 })
 
 
@@ -100,7 +110,7 @@ function getObjArr(name) { //localStorage 获取数组对象的方法
 }
 
 function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符串，转换为组件对象
-  const accessedRouters = asyncRouterMap.filter(route => {
+  let accessedRouters = asyncRouterMap.filter(route => {
     if (route.component) {
       if (route.component === 'Layout') { //Layout组件特殊处理
         route.component = Layout
@@ -113,6 +123,7 @@ function filterAsyncRouter(asyncRouterMap) { //遍历后台传来的路由字符
     }
     return true
   })
+
 
   return accessedRouters
 }
