@@ -9,7 +9,6 @@
         <el-menu-item
           :index="item.path+'/'+item.children[0].path"
           :class="{'submenu-title-noDropdown':!isNest}"
-          @click="clickItem(item)"
         >
           <span
             v-if="item.children[0].meta&&item.children[0].meta.title"
@@ -32,7 +31,7 @@
           ></sidebar-item>
 
           <router-link v-else :to="item.path+'/'+child.path" :key="child.name">
-            <el-menu-item :index="item.path+'/'+child.path" @click="clickItem(item)">
+            <el-menu-item :index="item.path+'/'+child.path">
               <span v-if="child.meta&&child.meta.title">{{child.meta.title}}</span>
             </el-menu-item>
           </router-link>
@@ -55,14 +54,7 @@ export default {
       default: false
     }
   },
-  methods: {
-    clickItem(item) {
-      // this.$emit("updateItems", item)
-      console.log("222222222222222222");
-      console.log(item);
-      console.log("222222222222222222");
-    }
-  },
+  methods: {}
 };
 </script>
 <style>

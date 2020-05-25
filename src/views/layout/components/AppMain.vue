@@ -33,7 +33,6 @@ export default {
     //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
     // }
     breadNav() {
-      console.log(this.$route);
       return this.$route.meta.title;
     }
   },

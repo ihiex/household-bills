@@ -8,12 +8,6 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <!--  <el-row :gutter="20">
-         
-        </el-row>
-        <el-row :gutter="20">
-          
-        </el-row>-->
         <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="发生日期：" prop="date">
@@ -27,38 +21,6 @@
                 v-model="ruleForm.date"
               ></el-date-picker>
             </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="7" style="line-height: 36px">维护类型:</el-col>
-            <el-col :span="15" style="line-height: 36px">
-              <el-input size="small" clearable v-model="outType" style="width: 100%;"></el-input>
-            </el-col>
-            <el-col :span="2" style="line-height: 36px">
-              <el-button
-                size="small"
-                icon="el-icon-plus"
-                plain
-                circle
-                title="添加一行"
-                @click="addType(outType)"
-              ></el-button>
-            </el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="7" style="line-height: 36px">维护姓名:</el-col>
-            <el-col :span="15" style="line-height: 36px">
-              <el-input size="small" clearable v-model="name" style="width: 100%;"></el-input>
-            </el-col>
-            <el-col :span="2" style="line-height: 36px">
-              <el-button
-                size="small"
-                icon="el-icon-plus"
-                plain
-                circle
-                title="添加一行"
-                @click="addName(name)"
-              ></el-button>
-            </el-col>
           </el-col>
         </el-row>
         <el-form-item label="开支方式：" prop="mode" style="color: #1ED76D">
@@ -81,10 +43,10 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in nameOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
+                  v-for="item in names"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -102,10 +64,10 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in nameOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
+                  v-for="item in names"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -123,10 +85,10 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in nameOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
+                  v-for="item in names"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -149,10 +111,10 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
+                  v-for="item in consumptionTypes"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -166,10 +128,10 @@
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in options1"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
+                  v-for="item in incomeTypes"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -203,7 +165,7 @@
         <el-form-item>
           <el-button size="small" type="primary" @click="submitFormlocality('ruleForm')">暂存本地</el-button>
           <el-button size="small" type="primary" @click="submitForm('ruleForm')">提交</el-button>
-          <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
+          <el-button size="small" @click="resetForm('ruleForm')" v-if="!isEdit">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -229,33 +191,10 @@ export default {
 
       this.ruleForm.list.splice(index, 0, obj);
     },
-    addName(name) {
-      let obj = {
-        value: this.nameOptions.length + 1,
-        label: name
-      };
-      this.nameOptions.push(obj);
-    },
-    addType(outType) {
-      let obj = {};
-      if (this.ruleForm.mode) {
-        obj = {
-          value: this.options1.length + 1,
-          label: outType
-        };
-        this.options1.push(obj);
-      } else {
-        obj = {
-          value: this.options.length + 1,
-          label: outType
-        };
-        this.options.push(obj);
-      }
-    },
     submitFormlocality(formName) {
-
-      this.ruleForm.id = getUuid();
-
+      if (this.$route.query.id === "null") {
+        this.ruleForm.id = getUuid();
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
           Idb(db_config).then(db => {
@@ -263,15 +202,25 @@ export default {
               tableName: "srcData",
               data: this.ruleForm,
               success: () => {
-                this.$message({
-                  message: "添加成功",
-                  type: "success"
-                });
+                this.conformFlag = true;
+                this.$router.push({ path: "/dataLists/datalists" });
+                db.close_db();
+                if (this.$route.query.id === "null") {
+                  this.$message({
+                    message: "添加成功",
+                    type: "success"
+                  });
+                } else {
+                  this.$message({
+                    message: "修改成功",
+                    type: "success"
+                  });
+                }
               }
             });
           });
         } else {
-          this.$message.error('添加失败');
+          this.$message.error("添加失败");
           return false;
         }
       });
@@ -281,6 +230,7 @@ export default {
 
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.$message("开发中....");
           console.log(this.ruleForm);
         } else {
           console.log("error submit!!");
@@ -313,13 +263,104 @@ export default {
           }
         ]
       };
+    },
+    getUsersInfo() {
+      Idb(db_config).then(
+        db => {
+          db.queryAll({
+            tableName: "userInfo",
+            success: res => {
+              this.names = res;
+              db.close_db();
+            }
+          });
+        },
+        error => {
+          this.$message({message: "获取用户信息失败",type:'error'});
+        }
+      );
+    },
+    getConsumptionType() {
+      Idb(db_config).then(
+        db => {
+          db.queryAll({
+            tableName: "consumptionType",
+            success: res => {
+              this.consumptionTypes = res;
+              db.close_db();
+            }
+          });
+        },
+        error => {
+          this.$message({message:"获取消费类型失败",type:'error'});
+        }
+      );
+    },
+    getIncomeType() {
+      Idb(db_config).then(
+        db => {
+          db.queryAll({
+            tableName: "incomeType",
+            success: res => {
+              this.incomeTypes = res;
+              db.close_db();
+            }
+          });
+        },
+        error => {
+          this.$message({message:"获取收入类型失败",type:'error'});
+        }
+      );
     }
   },
   mounted() {
-    //   this.setBreadcrumb([1,2,3])
+    if (this.$route.query.id !== "null") {
+      this.isEdit = true;
+      Idb(db_config).then(db => {
+        db.query({
+          tableName: "srcData",
+          condition: item => item.id === this.$route.query.id,
+          success: res => {
+            this.ruleForm = res[0];
+            db.close_db();
+          },
+          error: () => {
+            this.$message({
+              message: "数据获取失败",
+              type: "error"
+            });
+          }
+        });
+      });
+    }
+    this.getUsersInfo();
+    this.getConsumptionType();
+    this.getIncomeType();
+  },
+  beforeRouteLeave(to, from, next) {
+    if (
+      !this.conformFlag &&
+      (this.ruleForm.list.length >= 2 ||
+        this.ruleForm.list[0].money !== "" ||
+        this.ruleForm.list[0].type !== "")
+    ) {
+      this.$confirm("有新增的内容没有保存是否确定要离开", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          next();
+        })
+        .catch(() => {});
+    } else {
+      next();
+    }
   },
   data() {
     return {
+      conformFlag: false,
+      isEdit: false,
       name: "",
       outType: "",
       ruleForm: {
@@ -337,132 +378,9 @@ export default {
           }
         ]
       },
-      nameOptions: [
-        {
-          value: 1,
-          label: "邹燕飞"
-        },
-        {
-          value: 2,
-          label: "杨春燕"
-        },
-        {
-          value: 3,
-          label: "邹宇桐"
-        },
-        {
-          value: 4,
-          label: "邹宇倩"
-        },
-        {
-          value: 5,
-          label: "邹宇韬"
-        },
-        {
-          value: 6,
-          label: "杨小平"
-        },
-        {
-          value: 7,
-          label: "沈玉蓉"
-        },
-        {
-          value: 8,
-          label: "钟凤英"
-        },
-        {
-          value: 9,
-          label: "邹玉坤"
-        },
-        {
-          value: 10,
-          label: "其它"
-        }
-      ],
-      options1: [
-        {
-          value: 1,
-          label: "工资"
-        }
-      ],
-      options: [
-        {
-          value: 1,
-          label: "买菜"
-        },
-        {
-          value: 2,
-          label: "水果"
-        },
-        {
-          value: 3,
-          label: "衣服"
-        },
-        {
-          value: 4,
-          label: "学费"
-        },
-        {
-          value: 5,
-          label: "房租"
-        },
-        {
-          value: 6,
-          label: "美食/餐厅消费"
-        },
-        {
-          value: 7,
-          label: "小孩衣服"
-        },
-        {
-          value: 8,
-          label: "医疗支出"
-        },
-        {
-          value: 9,
-          label: "孝敬长辈"
-        },
-        {
-          value: 10,
-          label: "加油"
-        },
-        {
-          value: 11,
-          label: "汽车配件"
-        },
-        {
-          value: 12,
-          label: "探亲访友"
-        },
-        {
-          value: 13,
-          label: "房建"
-        },
-        {
-          value: 14,
-          label: "家用电器"
-        },
-        {
-          value: 15,
-          label: "电费"
-        },
-        {
-          value: 16,
-          label: "水费"
-        },
-        {
-          value: 17,
-          label: "电子产品"
-        },
-        {
-          value: 18,
-          label: "化妆品"
-        },
-        {
-          value: 19,
-          label: "其它消费"
-        }
-      ],
+      names: [],
+      incomeTypes: [],
+      consumptionTypes: [],
       rules: {
         money: [{ required: true, message: "请输入金额", trigger: "blur" }],
         /*  date: [

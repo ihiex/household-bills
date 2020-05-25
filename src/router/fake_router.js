@@ -26,8 +26,9 @@ export default {
                 meta: {
                     title: '数据录入',
                     icon: 'el-icon-edit'
-                }
+                },
             }],
+            hidden: true
         },
         {
             path: '/dataLists',
@@ -38,7 +39,7 @@ export default {
                 path: 'datalists',
                 component: 'datalists/index',
                 meta: {
-                    title: '数据列表',
+                    title: '收支明细',
                     icon: 'el-icon-edit'
                 }
             }],

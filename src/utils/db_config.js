@@ -32,8 +32,8 @@ export default {
                 }
             ]
         },
-        /* {
-            tableName: "info",                      // *表名 另外一张表，同理
+        {
+            tableName: "userInfo",   // 用户列表
             option: { keyPath: "id" },
             indexs: [
                 {
@@ -44,14 +44,38 @@ export default {
                 },
                 {
                      key: "name"
-                },
-                {
-                     key: "age"
-                },
-                {
-                     key: "sex"
                 }
             ]
-        } */
+        },
+        {
+            tableName: "consumptionType",  //消费类型          
+            option: { keyPath: "id" },
+            indexs: [
+                {
+                    key: "id",
+                    option:{
+                        unique: true
+                    }
+                },
+                {
+                     key: "name"
+                }
+            ]
+        },
+        {
+            tableName: "incomeType",  //收入类型                     
+            option: { keyPath: "id" },
+            indexs: [
+                {
+                    key: "id",
+                    option:{
+                        unique: true
+                    }
+                },
+                {
+                     key: "name"
+                }
+            ]
+        }
     ]
 };
