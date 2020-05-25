@@ -75,9 +75,11 @@ export default {
   methods: {
     queryDataLongRange() {
       console.log("远程数据");
+      this.$message("开发中...")
     },
     queryData() {
       console.log("本地数据");
+      this.$message("开发中...")
     },
     setChart(dom) {
       let myChart = echarts.init(dom);
